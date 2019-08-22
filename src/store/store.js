@@ -5,10 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    results: []
 
   },
+  getters: {
+    getResults: state => state.results
+  },
   mutations: {
-
+   setNewResult: (state, result) => {
+    state.results = result;
+  }
   },
   actions: {
 
