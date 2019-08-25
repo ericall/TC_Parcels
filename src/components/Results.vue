@@ -1,25 +1,70 @@
 <template>
-  <div 
-    v-bind:class="{ resultsOpen: showLeftPane }"
-     v-bind:style="{width: resultsWidth}">
-    <table class="table">
+  <div v-bind:class="{ resultsOpen: showLeftPane }" v-bind:style="{width: resultsWidth}">
+    <table class="table table-sm">
       <tbody>
         <tr></tr>
         <tr>
           <th scope="row">PIN</th>
           <td>{{addressResult.pin}}</td>
         </tr>
-        <tr>
+        <tr v-if="addressResult.owner">
           <th scope="row">Owner</th>
           <td>{{addressResult.owner}}</td>
         </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
+        <tr v-if="addressResult.taxpayer">
+          <th scope="row">Taxpayer</th>
+          <td>{{addressResult.taxpayer}}</td>
         </tr>
         <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
+          <th scope="row">Address</th>
+          <td>{{addressResult.fullAddress}}</td>
+        </tr>
+        <tr>
+          <th scope="row">County</th>
+          <td>{{addressResult.county}}</td>
+        </tr>
+        <tr v-if="addressResult.school">
+          <th scope="row">School District</th>
+          <td>{{addressResult.school}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Acres</th>
+          <td>{{addressResult.acres}}</td>
+        </tr>
+        <tr v-if="addressResult.buildYear">
+          <th scope="row">Year built</th>
+          <td>{{addressResult.buildYear}}</td>
+        </tr>
+        <tr v-if="addressResult.tmv">
+          <th scope="row" colspan="2">Market Value</th>
+        </tr>
+        <tr v-if="addressResult.tmv">
+          <th scope="row" class="indent-left">Total</th>
+          <td>{{addressResult.tmv}}</td>
+        </tr>
+        <tr v-if="addressResult.lmv">
+          <th scope="row" class="indent-left">Land</th>
+          <td>{{addressResult.lmv}}</td>
+        </tr>
+        <tr v-if="addressResult.bmv">
+          <th scope="row" class="indent-left">Building</th>
+          <td>{{addressResult.bmv}}</td>
+        </tr>
+        <tr v-if="addressResult.saleDate">
+          <th scope="row">Sale Date</th>
+          <td>{{addressResult.saleDate}}</td>
+        </tr>
+        <tr v-if="addressResult.salePrice">
+          <th scope="row">Sale Price</th>
+          <td>{{addressResult.salePrice}}</td>
+        </tr>
+        <tr v-if="addressResult.homestead">
+          <th scope="row">Homestead</th>
+          <td>{{addressResult.homestead}}</td>
+        </tr>
+                <tr v-if="addressResult.propType">
+          <th scope="row">Property type</th>
+          <td>{{addressResult.propType}}</td>
         </tr>
       </tbody>
     </table>
@@ -40,12 +85,23 @@ export default {
       showLeftPane: false,
       addressResult: {
         owner: null,
-        pid: null
+        taxpayer: null,
+        pid: null,
+        fullAddress: null,
+        county: null,
+        school: null,
+        acres: null,
+        buildYear: null,
+        tmv: null,
+        bmv: null,
+        lmv: null,
+        homestead: null,
+        propType: null
       }
     };
   },
   mounted() {
-     window.addEventListener("resize", this.adjustLeftPaneWidth);
+    window.addEventListener("resize", this.adjustLeftPaneWidth);
   },
   computed: {
     // result() {
@@ -94,13 +150,87 @@ export default {
     },
 
     processAttributes(attr) {
-      this.addressResult.owner = attr.OWNER_NAME;
-      this.addressResult.pin = attr.COUNTY_PIN;
-      this.addressResult.streetAddress = this.constructStreetAddress(attr);
+      this.addressResult.owner = this.getCleanValue(attr.OWNER_NAME);
+      this.addressResult.taxpayer = this.getCleanValue(attr.TAX_NAME);
+      this.addressResult.pin = this.getCleanValue(attr.COUNTY_PIN);
+      this.addressResult.school = this.getCleanValue(attr.SCHOOL_DST);
+      this.addressResult.fullAddress = this.constructStreetAddress(attr);
+      this.addressResult.county = this.getCleanValue(attr.CO_NAME);
+      this.addressResult.acres = this.getCleanValue(attr.ACRES_POLY);
+      this.addressResult.buildYear = this.getCleanValue(attr.YEAR_BUILT);
+      this.addressResult.tmv = this.convertToUsDollars(
+        this.getCleanValue(attr.EMV_TOTAL)
+      );
+      this.addressResult.lmv = this.convertToUsDollars(
+        this.getCleanValue(attr.EMV_LAND)
+      );
+      this.addressResult.bmv = this.convertToUsDollars(
+        this.getCleanValue(attr.EMV_BLDG)
+      );
+      this.addressResult.salePrice = this.convertToUsDollars(
+        this.getCleanValue(attr.SALE_VALUE)
+      );
+      this.addressResult.saleDate = this.getCleanValue(attr.SALE_DATE);
+      this.addressResult.homestead = this.getCleanValue(attr.HOMESTEAD);
+       this.addressResult.propType = this.getCleanValue(attr.USECLASS1);
     },
 
     constructStreetAddress(attr) {
-      const houseNumber = attr.ANUMBER;
+      const houseNumber = this.getCleanValue(attr.ANUMBER);
+      const city = this.getCleanValue(attr.CTU_NAME);
+      const street = this.getCleanValue(attr.ST_NAME);
+      const stPostType = this.getCleanValue(attr.ST_POS_TYP);
+      const stPosDir = this.getCleanValue(attr.ST_POS_DIR);
+
+      const zip = this.getCleanValue(attr.ZIP);
+      let address =
+        houseNumber + " " + street + stPostType + stPosDir + ", " + city + zip;
+
+      address = address.replace(/^[,\s]+|[,\s]+$/g, "");
+      address = address.replace(/\s*,\s*/g, ", ");
+
+      return address;
+    },
+
+    getCleanValue(val) {
+      let newVal;
+      if (val) {
+        if (val !== null) {
+          if (val !== "Null") {
+            if (val.trim() != "0") {
+              newVal = val.trim() + " ";
+            } else {
+              newVal = "";
+            }
+          } else {
+            newVal = "";
+          }
+        } else {
+          newVal = "";
+        }
+      } else {
+        newVal = "";
+      }
+
+      return newVal;
+    },
+
+    convertToUsDollars(val) {
+      if (val) {
+        if (val.trim() != "0") {
+          const formatter = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0
+          });
+
+          return formatter.format(val); // "$1,000.00"
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
     }
   }
 };
@@ -115,5 +245,10 @@ export default {
   top: 0;
   background: white;
   margin-top: 56px;
+}
+
+.indent-left {
+  padding-left: 20px !important;
+  font-style: italic;
 }
 </style>
