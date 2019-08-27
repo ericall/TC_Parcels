@@ -9,6 +9,7 @@
 import { loadModules } from "esri-loader";
 import config from "../store/config.json";
 import { mapGetters } from "vuex";
+import * as Queries from "../js/queries.js";
 //import { store } from "../store/store";
 
 const esriBasemapOptions = {
@@ -121,7 +122,9 @@ export default {
         "esri/layers/FeatureLayer",
         "esri/geometry/SpatialReference",
         "esri/tasks/IdentifyTask",
-        "esri/tasks/support/IdentifyParameters"
+        "esri/tasks/support/IdentifyParameters",
+        "esri/tasks/support/Query",
+        "esri/tasks/QueryTask"
       ],
       {
         // use a specific version instead of latest 4.x
@@ -136,7 +139,9 @@ export default {
         FeatureLayer,
         SpatialReference,
         IdentifyTask,
-        IdentifyParameters
+        IdentifyParameters,
+        Query,
+        QueryTask
       ]) => {
         this.esriMods = {
           Map,
@@ -146,8 +151,12 @@ export default {
           FeatureLayer,
           SpatialReference,
           IdentifyTask,
-          IdentifyParameters
+          IdentifyParameters,
+          Query,
+          QueryTask
         };
+
+         Queries.getSchoolDistricts(Query, QueryTask);
         // create map with the given options at a DOM node w/ id 'mapNode'
         var mapLayer = new MapImageLayer({
           url: config.MetroGISUrl,
@@ -207,6 +216,8 @@ export default {
           // }
           // );
         });
+
+       
       }
     );
   }

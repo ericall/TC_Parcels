@@ -13,6 +13,7 @@ import Header from "./components/Header.vue";
 import Map from "./components/Map.vue";
 import Results from "./components/Results.vue";
 
+
 export default {
   name: "app",
   components: {

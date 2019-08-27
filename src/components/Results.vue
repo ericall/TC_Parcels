@@ -108,7 +108,8 @@ export default {
     //   return store.state.results;
     // },
     ...mapGetters({
-      result: "getResults"
+      result: "getResults",
+      schoolDistricts: "getSchoolDistricts"
     })
   },
   watch: {
@@ -116,6 +117,9 @@ export default {
       console.log("watch result", res);
 
       this.processResults(res);
+    },
+    schoolDistricts(sd){
+      console.log("Schoold districts");
     }
   },
   methods: {

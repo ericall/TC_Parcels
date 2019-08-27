@@ -1,22 +1,25 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
+import { getSchoolDistricts } from "../js/queries";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    results: []
-
+    results: [],
+    schoolDistricts: []
   },
   getters: {
-    getResults: state => state.results
+    getResults: state => state.results,
+    getSchoolDistricts: state => state.schoolDistricts
   },
   mutations: {
-   setNewResult: (state, result) => {
-    state.results = result;
-  }
+    setNewResult: (state, result) => {
+      state.results = result;
+    },
+    setSchoolDistricts: (state, schoolDistricts) => {
+      state.schoolDistricts = schoolDistricts;
+    }
   },
-  actions: {
-
-  }
-})
+  actions: {}
+});
