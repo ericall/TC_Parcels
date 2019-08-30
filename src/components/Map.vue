@@ -2,7 +2,12 @@
   <div
     id="viewDiv"
     v-bind:style="{height: mapHeight + 'px', width: mapWidth, marginLeft: mapLeftMargin }"
-  ></div>
+  >
+    <div id="map-btn-grp" class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-primary esri-icon-basemap"></button>
+      <button type="button" class="btn btn-primary  esri-icon-layers"></button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -156,7 +161,7 @@ export default {
           QueryTask
         };
 
-         Queries.getSchoolDistricts(Query, QueryTask);
+        Queries.getSchoolDistricts(Query, QueryTask);
         // create map with the given options at a DOM node w/ id 'mapNode'
         var mapLayer = new MapImageLayer({
           url: config.MetroGISUrl,
@@ -216,8 +221,6 @@ export default {
           // }
           // );
         });
-
-       
       }
     );
   }
@@ -240,5 +243,19 @@ header {
 #viewDiv {
   height: 100%;
   width: 100%;
+}
+
+#map-btn-grp {
+      position: absolute;
+    right: 15px;
+    margin-top: 15px;
+}
+
+.btn-primary {
+  border-radius: 30px;
+      margin: 0px 5px;
+      background-color: #3a3a3a;
+    border-color: #c9e8ff;
+    color: #c9e8ec;
 }
 </style>

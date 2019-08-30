@@ -16,6 +16,7 @@ export function getSchoolDistricts(Query,QueryTask) {
     // When resolved, returns features and graphics that satisfy the query.
     queryTask.execute(query).then(function(results){
       console.log(results.features);
-      _this.$store.commit("setSchoolDistricts", results.features);
+      //store.commit("setSchoolDistricts", results.features);
+      config.Districts = results.features;
     });
 }

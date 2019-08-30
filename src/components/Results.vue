@@ -1,6 +1,10 @@
 <template>
-  <div v-bind:class="{ resultsOpen: showLeftPane }" v-bind:style="{width: resultsWidth}">
-    <table class="table table-sm">
+  <div
+    id="results-pane"
+    v-bind:class="{ resultsOpen: showLeftPane }"
+    v-bind:style="{width: resultsWidth, height: resultsHeight}"
+  >
+    <table class="table table-sm table-striped">
       <tbody>
         <tr></tr>
         <tr>
@@ -50,6 +54,10 @@
           <th scope="row" class="indent-left">Building</th>
           <td>{{addressResult.bmv}}</td>
         </tr>
+        <tr v-if="addressResult.totalTax">
+          <th scope="row">Total Tax</th>
+          <td>{{addressResult.totalTax}}</td>
+        </tr>
         <tr v-if="addressResult.saleDate">
           <th scope="row">Sale Date</th>
           <td>{{addressResult.saleDate}}</td>
@@ -62,9 +70,24 @@
           <th scope="row">Homestead</th>
           <td>{{addressResult.homestead}}</td>
         </tr>
-                <tr v-if="addressResult.propType">
+        <tr v-if="addressResult.propType">
           <th scope="row">Property type</th>
           <td>{{addressResult.propType}}</td>
+        </tr>
+        <tr>
+          <th scope="row" colspan="2">Housing Info</th>
+        </tr>
+        <tr v-if="addressResult.homeStyle">
+          <th scope="row" class="indent-left">Home Style</th>
+          <td>{{addressResult.homeStyle}}</td>
+        </tr>
+        <tr v-if="addressResult.dwellingType">
+          <th scope="row" class="indent-left">Dwelling Type</th>
+          <td>{{addressResult.dwellingType}}</td>
+        </tr>
+        <tr v-if="addressResult.finishedSqFt">
+          <th scope="row" class="indent-left">Finished SqFt</th>
+          <td>{{addressResult.finishedSqFt}}</td>
         </tr>
       </tbody>
     </table>
@@ -75,12 +98,14 @@
 //import { store } from "../store/store";
 //import { mapState } from "vuex";
 import { mapGetters } from "vuex";
+import config from "../store/config.json";
 
 export default {
   name: "Results",
   data() {
     return {
       resultsWidth: 0,
+      resultsHeight: 0,
       nresult: null,
       showLeftPane: false,
       addressResult: {
@@ -96,7 +121,17 @@ export default {
         bmv: null,
         lmv: null,
         homestead: null,
-        propType: null
+        propType: null,
+        basement: null, //BASEMENT
+        finishedSqFt: null, //FIN_SQ_FT
+        garage: null, //GARAGE
+        garageSqFt: null, //GARAGESQFT
+        cooling: null, //COOLING
+        heating: null, //HEATING
+        numOfUnits: null, //NUM_UNITS,
+        homeStyle: null, //HOME_STYLE,
+        totalTax: null, //TOTAL_TAX
+        dwellingType: null //DWELL_TYPE
       }
     };
   },
@@ -118,7 +153,7 @@ export default {
 
       this.processResults(res);
     },
-    schoolDistricts(sd){
+    schoolDistricts(sd) {
       console.log("Schoold districts");
     }
   },
@@ -151,13 +186,16 @@ export default {
       } else {
         this.resultsWidth = "0";
       }
+      var headerHeight = document.getElementsByTagName("header")[0]
+        .clientHeight;
+      this.resultsHeight = (window.innerHeight - headerHeight) + "px";
     },
 
     processAttributes(attr) {
       this.addressResult.owner = this.getCleanValue(attr.OWNER_NAME);
       this.addressResult.taxpayer = this.getCleanValue(attr.TAX_NAME);
       this.addressResult.pin = this.getCleanValue(attr.COUNTY_PIN);
-      this.addressResult.school = this.getCleanValue(attr.SCHOOL_DST);
+      this.addressResult.school = this.getDistrict(attr.SCHOOL_DST);
       this.addressResult.fullAddress = this.constructStreetAddress(attr);
       this.addressResult.county = this.getCleanValue(attr.CO_NAME);
       this.addressResult.acres = this.getCleanValue(attr.ACRES_POLY);
@@ -174,9 +212,15 @@ export default {
       this.addressResult.salePrice = this.convertToUsDollars(
         this.getCleanValue(attr.SALE_VALUE)
       );
+      this.addressResult.totalTax = this.convertToUsDollars(
+        this.getCleanValue(attr.TOTAL_TAX)
+      );
       this.addressResult.saleDate = this.getCleanValue(attr.SALE_DATE);
       this.addressResult.homestead = this.getCleanValue(attr.HOMESTEAD);
-       this.addressResult.propType = this.getCleanValue(attr.USECLASS1);
+      this.addressResult.propType = this.getCleanValue(attr.USECLASS1);
+      this.addressResult.finishedSqFt = this.getCleanValue(attr.FIN_SQ_FT);
+      this.addressResult.homeStyle = this.getCleanValue(attr.HOME_STYLE);
+      this.addressResult.dwellingType = this.getCleanValue(attr.DWELL_TYPE);
     },
 
     constructStreetAddress(attr) {
@@ -235,12 +279,31 @@ export default {
       } else {
         return "";
       }
+    },
+
+    getDistrict(dist) {
+      let schoolDistrict;
+      let schDist = dist.split("-")[1];
+      if (config.Districts.length > 0) {
+        config.Districts.forEach(function(d) {
+          if (parseInt(schDist) == d.attributes.UNI_MAJ) {
+            schoolDistrict = d.attributes.UNI_NAM;
+          }
+        });
+        return schoolDistrict;
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+#results-pane {
+  overflow: auto;
+  background: rgb(58, 58, 58);
+  color: rgb(201, 232, 255);
+}
+
 .resultsOpen {
   width: 30%;
   height: 100%;
@@ -254,5 +317,25 @@ export default {
 .indent-left {
   padding-left: 20px !important;
   font-style: italic;
+}
+
+.table-sm td,
+.table-sm th {
+  padding-left: 10px;
+}
+
+.table td, .table th {
+    border-top: 1px solid #fdd7d7!important;
+}
+
+th {
+    text-align: inherit;
+    font-weight: 500;
+    font-style: italic;
+    color: #fff4b8;
+}
+
+td {
+font-weight: 600;
 }
 </style>

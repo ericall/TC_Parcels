@@ -2,5 +2,6 @@
     "Map": null,
     "View": null,
     "MetroGISUrl": "https://gis2.metc.state.mn.us/arcgis/rest/services/plan_regional_parcels/MapServer",
-    "SchoolDistrictUrl": "https://w20.education.state.mn.us/arcgis/rest/services/Districts/MapServer/0/"
+    "SchoolDistrictUrl": "https://w20.education.state.mn.us/arcgis/rest/services/Districts/MapServer/0/",
+    "Districts": null
 }
