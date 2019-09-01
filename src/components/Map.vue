@@ -4,8 +4,12 @@
     v-bind:style="{height: mapHeight + 'px', width: mapWidth, marginLeft: mapLeftMargin }"
   >
     <div id="map-btn-grp" class="btn-group" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-primary esri-icon-basemap"></button>
-      <button type="button" class="btn btn-primary  esri-icon-layers"></button>
+      <button id="basemap-btn" type="button" class="btn btn-primary">
+        <img src="../assets/basemaps.png" />
+      </button>
+      <button id="mapLayers-btn" type="button" class="btn btn-primary">
+        <img src="../assets/maplayers4.png" />
+      </button>
     </div>
   </div>
 </template>
@@ -246,16 +250,33 @@ header {
 }
 
 #map-btn-grp {
-      position: absolute;
-    right: 15px;
-    margin-top: 15px;
+  position: absolute;
+  right: 15px;
+  margin-top: 15px;
 }
 
 .btn-primary {
   border-radius: 30px;
-      margin: 0px 5px;
-      background-color: #3a3a3a;
-    border-color: #c9e8ff;
-    color: #c9e8ec;
+  // margin: 0px 5px;
+  background-color: #3a3a3a;
+  border-color: #c9e8ff;
+  color: #c9e8ec;
+  width: 50px;
+  transition: all 0.2s ease-in-out;
+  max-height: 40px;
+}
+
+.btn-primary:hover {
+  width: 135px;
+  background-color: #089fc1;
+  border-color: #089fc1;
+}
+
+#basemap-btn:hover::after {
+  content: " Basemaps";
+}
+
+#mapLayers-btn:hover::after {
+  content: " Maplayers";
 }
 </style>

@@ -75,7 +75,7 @@
           <td>{{addressResult.propType}}</td>
         </tr>
         <tr>
-          <th scope="row" colspan="2">Housing Info</th>
+          <th scope="row" colspan="2">Building Info</th>
         </tr>
         <tr v-if="addressResult.homeStyle">
           <th scope="row" class="indent-left">Home Style</th>
@@ -85,9 +85,33 @@
           <th scope="row" class="indent-left">Dwelling Type</th>
           <td>{{addressResult.dwellingType}}</td>
         </tr>
+        <tr v-if="addressResult.numOfUnits">
+          <th scope="row" class="indent-left">Number of Units</th>
+          <td>{{addressResult.numOfUnits}}</td>
+        </tr>
         <tr v-if="addressResult.finishedSqFt">
           <th scope="row" class="indent-left">Finished SqFt</th>
           <td>{{addressResult.finishedSqFt}}</td>
+        </tr>
+        <tr v-if="addressResult.basement">
+          <th scope="row" class="indent-left">Basement</th>
+          <td>{{addressResult.basement}}</td>
+        </tr>
+        <tr v-if="addressResult.heating">
+          <th scope="row" class="indent-left">Heating</th>
+          <td>{{addressResult.heating}}</td>
+        </tr>
+        <tr v-if="addressResult.cooling">
+          <th scope="row" class="indent-left">Cooling</th>
+          <td>{{addressResult.cooling}}</td>
+        </tr>
+                <tr v-if="addressResult.garage">
+          <th scope="row" class="indent-left">Garage</th>
+          <td>{{addressResult.garage}}</td>
+        </tr>
+                <tr v-if="addressResult.garageSqFt">
+          <th scope="row" class="indent-left">Garage SqFt</th>
+          <td>{{addressResult.garageSqFt}}</td>
         </tr>
       </tbody>
     </table>
@@ -188,7 +212,7 @@ export default {
       }
       var headerHeight = document.getElementsByTagName("header")[0]
         .clientHeight;
-      this.resultsHeight = (window.innerHeight - headerHeight) + "px";
+      this.resultsHeight = window.innerHeight - headerHeight + "px";
     },
 
     processAttributes(attr) {
@@ -221,6 +245,12 @@ export default {
       this.addressResult.finishedSqFt = this.getCleanValue(attr.FIN_SQ_FT);
       this.addressResult.homeStyle = this.getCleanValue(attr.HOME_STYLE);
       this.addressResult.dwellingType = this.getCleanValue(attr.DWELL_TYPE);
+      this.addressResult.basement = this.getCleanValue(attr.BASEMENT);
+      this.addressResult.heating = this.getCleanValue(attr.HEATING);
+      this.addressResult.cooling = this.getCleanValue(attr.COOLING);
+      this.addressResult.numOfUnits = this.getCleanValue(attr.NUM_UNITS);
+      this.addressResult.garage = this.getCleanValue(attr.GARAGE);
+      this.addressResult.garageSqFt = this.getCleanValue(attr.GARAGESQFT);
     },
 
     constructStreetAddress(attr) {
@@ -301,7 +331,7 @@ export default {
 #results-pane {
   overflow: auto;
   background: rgb(58, 58, 58);
-  color: rgb(201, 232, 255);
+  color: rgb(228, 231, 234);
 }
 
 .resultsOpen {
@@ -311,12 +341,13 @@ export default {
   position: absolute;
   top: 0;
   background: white;
-  margin-top: 56px;
+  margin-top: 55px;
 }
 
 .indent-left {
-  padding-left: 20px !important;
+  padding-left: 25px !important;
   font-style: italic;
+  font-size: 15px;
 }
 
 .table-sm td,
@@ -324,18 +355,19 @@ export default {
   padding-left: 10px;
 }
 
-.table td, .table th {
-    border-top: 1px solid #fdd7d7!important;
+.table td,
+.table th {
+  border-top: 1px solid #6f6e6e !important;
 }
 
 th {
-    text-align: inherit;
-    font-weight: 500;
-    font-style: italic;
-    color: #fff4b8;
+  text-align: inherit;
+  font-weight: 500;
+  font-style: italic;
+  color: #fff4b8;
 }
 
 td {
-font-weight: 600;
+  font-weight: 600;
 }
 </style>
