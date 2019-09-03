@@ -18,7 +18,7 @@
 import { loadModules } from "esri-loader";
 import config from "../store/config.json";
 import { mapGetters } from "vuex";
-import * as Queries from "../js/queries.js";
+import Queries from "../js/queries";
 //import { store } from "../store/store";
 
 const esriBasemapOptions = {

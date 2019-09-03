@@ -1,6 +1,6 @@
 <template>
   <header>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="z-index: 99;">
       <a class="navbar-brand" href="#">TC Parcel</a>
       <button
         class="navbar-toggler"
@@ -15,13 +15,14 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <form class="form-inline mx-auto">
-          <input
+          <!-- <input
             id="search-input"
             class="form-control mr-sm-2"
             type="search"
             placeholder="Search by address or PIN"
-          />
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          /> -->
+          <Search></Search>
+          <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
         </form>
         <ul class="navbar-nav my-2 my-md-0">
           <!-- <li class="nav-item active">
@@ -42,8 +43,14 @@
 </template>
 
 <script>
+
+import Search from "./Search.vue";
+
 export default {
-  name: "Header"
+  name: "Header", 
+  components: {
+    Search
+  }
 };
 </script>
 
@@ -98,4 +105,18 @@ header {
 #search-input {
   width: 300px !important;
 }
+
+
+@media screen and (max-width: 767px) and (min-width: 574px) {
+  #info-btn {
+    top: 50px;
+  }
+}
+
+@media screen and (max-width: 573px) {
+  #info-btn {
+    top: 93px;
+  }
+}
+
 </style>

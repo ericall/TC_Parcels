@@ -186,7 +186,8 @@ export default {
       this.showLeftPane = true;
       this.nresult = res;
       if (res.length === 1) {
-        this.processAttributes(res[0].feature.attributes);
+        let attr = res[0].attributes || res[0].feature.attributes;
+        this.processAttributes(attr);
         this.adjustLeftPaneWidth("results");
       }
     },
@@ -275,8 +276,8 @@ export default {
       if (val) {
         if (val !== null) {
           if (val !== "Null") {
-            if (val.trim() != "0") {
-              newVal = val.trim() + " ";
+            if (val.toString().trim() != "0") {
+              newVal = val.toString().trim() + " ";
             } else {
               newVal = "";
             }
@@ -295,7 +296,7 @@ export default {
 
     convertToUsDollars(val) {
       if (val) {
-        if (val.trim() != "0") {
+        if (val.toString().trim() != "0") {
           const formatter = new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
