@@ -74,7 +74,7 @@
           <th scope="row">Property type</th>
           <td>{{addressResult.propType}}</td>
         </tr>
-        <tr>
+        <tr v-if="showBuildingInfo">
           <th scope="row" colspan="2">Building Info</th>
         </tr>
         <tr v-if="addressResult.homeStyle">
@@ -105,11 +105,11 @@
           <th scope="row" class="indent-left">Cooling</th>
           <td>{{addressResult.cooling}}</td>
         </tr>
-                <tr v-if="addressResult.garage">
+        <tr v-if="addressResult.garage">
           <th scope="row" class="indent-left">Garage</th>
           <td>{{addressResult.garage}}</td>
         </tr>
-                <tr v-if="addressResult.garageSqFt">
+        <tr v-if="addressResult.garageSqFt">
           <th scope="row" class="indent-left">Garage SqFt</th>
           <td>{{addressResult.garageSqFt}}</td>
         </tr>
@@ -132,6 +132,7 @@ export default {
       resultsHeight: 0,
       nresult: null,
       showLeftPane: false,
+      showBuildingInfo: false,
       addressResult: {
         owner: null,
         taxpayer: null,
@@ -155,7 +156,8 @@ export default {
         numOfUnits: null, //NUM_UNITS,
         homeStyle: null, //HOME_STYLE,
         totalTax: null, //TOTAL_TAX
-        dwellingType: null //DWELL_TYPE
+        dwellingType: null, //DWELL_TYPE,
+        
       }
     };
   },
@@ -240,7 +242,7 @@ export default {
       this.addressResult.totalTax = this.convertToUsDollars(
         this.getCleanValue(attr.TOTAL_TAX)
       );
-      this.addressResult.saleDate = this.getCleanValue(attr.SALE_DATE);
+      this.addressResult.saleDate = this.getSaleDate(attr.SALE_DATE);
       this.addressResult.homestead = this.getCleanValue(attr.HOMESTEAD);
       this.addressResult.propType = this.getCleanValue(attr.USECLASS1);
       this.addressResult.finishedSqFt = this.getCleanValue(attr.FIN_SQ_FT);
@@ -252,6 +254,12 @@ export default {
       this.addressResult.numOfUnits = this.getCleanValue(attr.NUM_UNITS);
       this.addressResult.garage = this.getCleanValue(attr.GARAGE);
       this.addressResult.garageSqFt = this.getCleanValue(attr.GARAGESQFT);
+
+      if (this.addressResult.homeStyle || this.addressResult.dwellingType || this.addressResult.basement || this.addressResult.heating || this.addressResult.numOfUnits || this.addressResult.garage){
+        this.showBuildingInfo = true;
+      } else {
+        this.showBuildingInfo = false;
+      }
     },
 
     constructStreetAddress(attr) {
@@ -309,6 +317,25 @@ export default {
         }
       } else {
         return "";
+      }
+    },
+
+    getSaleDate(saleDate) {
+      let retSaleDate = "";
+      if (saleDate) {
+        if (saleDate !== "Null") {
+          if (typeof saleDate === "string") {
+            retSaleDate = saleDate.split("/")[0] + "/" + saleDate.split("/")[2];
+          } else {
+            let dt = new Date(saleDate);
+            let mnth = dt.getUTCMonth() + 1;
+            let yr = dt.getFullYear();
+            retSaleDate = mnth + "/" + yr;
+          }
+        } else {
+          retSaleDate = "";
+        }
+        return retSaleDate;
       }
     },
 

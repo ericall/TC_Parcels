@@ -59,5 +59,40 @@ export default {
         // store.commit("showError", "There was an issue retrieving data.");
         // store.commit("hideLoader");
       });
+  },
+
+  /* query by a point
+    @param - foundPoint : object | a point
+    @param - multiInput : boolean | if multi input is on
+    @param - type : string | the type to clear - either buffer or all features
+    @return - none
+  */
+  queryByPoint(foundPoint, Query, QueryTask) {
+    console.log("store.queryByPoint", foundPoint);
+    const _this = this;
+
+    const qTask = new QueryTask({
+      url: config.ParcelsPoly
+    });
+
+    const params = new Query({
+      returnGeometry: true,
+      outFields: ["*"],
+      geometry: foundPoint,
+      spatialRelationship: "intersects"
+    });
+
+    qTask
+      .execute(params)
+      .then(results => {
+        console.log("query results", results);
+        store.commit("setNewResult", results.features);
+        //  _this.processAddressResults(foundPoint, res, multiInput, type);
+      })
+      .catch(err => {
+        console.log("error querying for data", err);
+       // store.commit("showError", "There was an issue retrieving data.");
+       // store.commit("hideLoader");
+      });
   }
 };

@@ -3,7 +3,6 @@
     <input
       id="search-input-box"
       class="form-control mr-sm-2 search-input"
-      type="search"
       v-model.trim="search"
       v-bind:placeholder="configs.placeholder"
       @input="autosuggest($event)"
@@ -73,51 +72,7 @@
         :class="{ 'is-active': i === arrowCounter }"
       >{{ result }}</li>
     </ul>
-    <!-- Advanced Search Modal -->
-    <div
-      class="modal fade"
-      id="advancedSearchModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="advancedSearchModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="advancedSearchModalLabel">Multi-input</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p class="multi-input-text">Multi-input</p>
-            <form id="multi-form">
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  id="multi-input-checkbox"
-                  :value="false"
-                  @click="changeMultiInput"
-                />
-                <span class="slider round">
-                  <span class="multi-on">On</span>
-                  <span class="multi-off">Off</span>
-                </span>
-              </label>
-            </form>
-            <p class="multi-input-text">Turn on multi-input to:</p>
-            <ul class="multi-input-text">
-              <li>Search by map click or address/PID search without clearing the previous selection.</li>
-              <li>Enter a string of PIDs in the search input that will select all the entered PIDs. (e.g. 2602924220080,2302924330044,2602924220352)</li>
-            </ul>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </template>
 
@@ -207,7 +162,7 @@ export default {
         input = validateInput(input);
 
         if (input.type === "Address" || input.type === "PID") {
-         // this.$store.commit("changeSearchType", "address");
+          // this.$store.commit("changeSearchType", "address");
           if (input.type === "Address") {
             cityName = this.getCity(input.value.split(",")[1]);
             if (cityName) {
@@ -222,7 +177,11 @@ export default {
 
             if (autoComplAddrFound) {
               let objectId = this.getAutoComplAddress(input.value);
-              query.queryByObjectId(objectId, this.esriModules.Query, this.esriModules.QueryTask);
+              query.queryByObjectId(
+                objectId,
+                this.esriModules.Query,
+                this.esriModules.QueryTask
+              );
             } else {
               this.sendToLocator(input.value);
             }
@@ -288,7 +247,7 @@ export default {
     queryForManyPids(input) {
       console.log("queryForManyPids");
       const _this = this;
-   //   this.$store.commit("changeSearchType", "address");
+      //   this.$store.commit("changeSearchType", "address");
       const inputArr = input.split(",");
 
       if (inputArr.length > 0) {
@@ -322,7 +281,7 @@ export default {
     */
     findMultAddress(evt) {
       const address = evt.target.innerText;
-     // this.$store.commit("changeSearchType", "address");
+      // this.$store.commit("changeSearchType", "address");
       this.searchInput(address);
       this.multipleAddressesFound = false;
     },
@@ -350,8 +309,8 @@ export default {
 
             query.queryByPoint(
               foundAddress[0].location,
-              self.multiInput,
-              "address"
+              this.esriModules.Query,
+              this.esriModules.QueryTask
             );
           } else if (foundAddress.length > 1) {
             self.$store.commit("hideLoader");
@@ -416,13 +375,24 @@ export default {
 
         //  params.where = `SUBSTRING(CONCAT_AD FROM 1 FOR ${this.search.length}) LIKE '%${this.search}%'`;
 
-        let houseNumber, streetName;
-        if (this.search.split(" ").length > 1) {
+        let houseNumber, streetName, pos;
+        if (this.search.split(" ").length === 2) {
+          this.continueSearch = true;
           houseNumber = this.search.split(" ")[0];
           streetName = this.search.split(" ")[1];
+          params.where = `ANUMBER = '${houseNumber}' AND SUBSTRING(ST_NAME FROM 1 FOR ${streetName.length})  LIKE '%${streetName}%'`;
+        } else if (this.search.split(" ").length > 2) {
+          this.continueSearch = true;
+          houseNumber = this.search.split(" ")[0];
+          streetName = this.search.split(" ")[1];
+          pos = this.search.split(" ")[2];
+          params.where = `ANUMBER = '${houseNumber}' AND SUBSTRING(ST_NAME FROM 1 FOR ${streetName.length})  LIKE '%${streetName}%' AND ( SUBSTRING(ST_POS_TYP FROM 1 FOR ${pos.length})  LIKE '%${pos}%' OR  SUBSTRING(ST_POS_DIR FROM 1 FOR ${pos.length})  LIKE '%${pos}%')`;
+        } else {
+          this.isOpen = false;
+          this.continueSearch = false;
         }
 
-        params.where = `ANUMBER = '${houseNumber}' AND SUBSTRING(ST_NAME FROM 1 FOR ${streetName.length})  LIKE '%${streetName}%'`;
+        //   params.where = `ANUMBER = '${houseNumber}' AND SUBSTRING(ST_NAME FROM 1 FOR ${streetName.length})  LIKE '%${streetName}%' OR `;
         //ANUMBER = '4029' AND ST_NAME LIKE '%44%'
         if (this.continueSearch) {
           qTask
@@ -443,52 +413,58 @@ export default {
       this.autoCompleteAddresses = [];
       this.autoCompleteAddressesFull = [];
       if (this.continueSearch) {
-        response.features.forEach(item => {
-          //const addPredictResult = `${item.attributes.CONCAT_AD.trim()}, ${item.attributes.MUNI_NAME.trim()}`;
-          //   const addPredictResult = `${
-          //     item.attributes.ANUMBER
-          //   }, ${item.attributes.CTU_NAME.trim()}`;
+        if (response.features.length > 0) {
+          response.features.forEach(item => {
+            //const addPredictResult = `${item.attributes.CONCAT_AD.trim()}, ${item.attributes.MUNI_NAME.trim()}`;
+            //   const addPredictResult = `${
+            //     item.attributes.ANUMBER
+            //   }, ${item.attributes.CTU_NAME.trim()}`;
 
-          const addPredictResult = this.constructStreetAddress(item.attributes);
+            const addPredictResult = this.constructStreetAddress(
+              item.attributes
+            );
 
-          //   if (item.attributes.SUB_AD_ID.length > 0) {
-          //     const add = addPredictResult; // "3000 RALEIGH AVENUE SOUTH 401, ST. LOUIS PARK"
-          //     const spl = add.split(",")[0]; // "3000 RALEIGH AVENUE SOUTH 401"
-          //     const spl1 = spl.trim(); // "3000 RALEIGH AVENUE SOUTH 401"
-          //     const spl2 = spl1.lastIndexOf(item.attributes.SUB_ID1); // 26
-          //     let spl3 = spl1.slice(0, spl2); // "3000 RALEIGH AVENUE SOUTH"
+            //   if (item.attributes.SUB_AD_ID.length > 0) {
+            //     const add = addPredictResult; // "3000 RALEIGH AVENUE SOUTH 401, ST. LOUIS PARK"
+            //     const spl = add.split(",")[0]; // "3000 RALEIGH AVENUE SOUTH 401"
+            //     const spl1 = spl.trim(); // "3000 RALEIGH AVENUE SOUTH 401"
+            //     const spl2 = spl1.lastIndexOf(item.attributes.SUB_ID1); // 26
+            //     let spl3 = spl1.slice(0, spl2); // "3000 RALEIGH AVENUE SOUTH"
 
-          //     if (spl3.indexOf("#") > -1) {
-          //       // removes '#' if it is in the address
-          //       const hashIndex = spl3.indexOf("#");
-          //       const subHash = spl3.substr(0, hashIndex);
-          //       spl3 = subHash;
-          //     }
+            //     if (spl3.indexOf("#") > -1) {
+            //       // removes '#' if it is in the address
+            //       const hashIndex = spl3.indexOf("#");
+            //       const subHash = spl3.substr(0, hashIndex);
+            //       spl3 = subHash;
+            //     }
 
-          //     const add2 = `${spl3.trim()}, ${item.attributes.MUNI_NAME.trim()}`; // "3000 RALEIGH AVENUE SOUTH, ST. LOUIS PARK"
-          //     addArr.push(add2);
-          //   } else {
-          //     const add2 = addPredictResult;
-          //     addArr.push(add2);
-          //   }
+            //     const add2 = `${spl3.trim()}, ${item.attributes.MUNI_NAME.trim()}`; // "3000 RALEIGH AVENUE SOUTH, ST. LOUIS PARK"
+            //     addArr.push(add2);
+            //   } else {
+            //     const add2 = addPredictResult;
+            //     addArr.push(add2);
+            //   }
 
-          // const add2 = addPredictResult;
-          this.autoCompleteAddresses.push(addPredictResult);
-          this.autoCompleteAddressesFull.push({
-            address: addPredictResult,
-            objectId: item.attributes.OBJECTID
+            // const add2 = addPredictResult;
+            this.autoCompleteAddresses.push(addPredictResult);
+            this.autoCompleteAddressesFull.push({
+              address: addPredictResult,
+              objectId: item.attributes.OBJECTID
+            });
+            //addArr.push(add2);
           });
-          //addArr.push(add2);
-        });
 
-        let left = this.autoCompleteAddresses;
+          let left = this.autoCompleteAddresses;
 
-        left = [...new Set(left)];
-        this.results = left;
+          left = [...new Set(left)];
+          this.results = left;
 
-        console.log("fitler results", this.results);
-        this.isOpen = true;
-        this.adjustAutoHeight();
+          console.log("fitler results", this.results);
+          this.isOpen = true;
+          this.adjustAutoHeight();
+        } else {
+          this.isOpen = false;
+        }
       }
     },
 
@@ -663,8 +639,9 @@ export default {
     });
 
     /**** fixes IE issue with selecting multi input from caches status of switch button ******/
-    let search = document.getElementsByClassName("search-input")[0];
-    search.value = "";
+   // let search = document.getElementsByClassName("search-input")[0];
+    //search.value = "";
+    
     // this.$store.commit("changeMultiInputState", false);
     // let multiCheckbox = document.getElementById("multi-input-checkbox");
     // multiCheckbox.checked = false;

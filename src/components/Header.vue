@@ -14,16 +14,16 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <form class="form-inline mx-auto">
+        <div class="form-inline mx-auto">
           <!-- <input
             id="search-input"
             class="form-control mr-sm-2"
             type="search"
             placeholder="Search by address or PIN"
-          /> -->
+          />-->
           <Search></Search>
           <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
-        </form>
+        </div>
         <ul class="navbar-nav my-2 my-md-0">
           <!-- <li class="nav-item active">
       <button type="button" class="btn btn-primary esri-icon-basemap"></button>
@@ -34,7 +34,7 @@
           <li class="nav-item">
             <button id="info-btn" type="button" class="btn btn-primary">
               <img id="info-img" src="../assets/info.png" />
-              </button>
+            </button>
           </li>
         </ul>
       </div>
@@ -43,11 +43,10 @@
 </template>
 
 <script>
-
 import Search from "./Search.vue";
 
 export default {
-  name: "Header", 
+  name: "Header",
   components: {
     Search
   }
@@ -78,34 +77,33 @@ header {
 }
 
 #info-btn {
-      position: absolute;
-    top: 10px;
-    right: 15px;
-    content: "";
-    height: 40px;
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  content: "";
+  height: 40px;
 }
 
 #info-btn:hover::after {
   content: " Information";
   float: right;
-   // position: absolute;
-    left: 7px;
+  // position: absolute;
+  left: 7px;
 }
 
 #info-img {
-   left: 10px;
-    position: absolute;
-    top: 7px;
+  left: 10px;
+  position: absolute;
+  top: 7px;
 }
 
 #info-img:hover {
-    float: left;
+  float: left;
 }
 
 #search-input {
   width: 300px !important;
 }
-
 
 @media screen and (max-width: 767px) and (min-width: 574px) {
   #info-btn {
@@ -118,5 +116,4 @@ header {
     top: 93px;
   }
 }
-
 </style>
