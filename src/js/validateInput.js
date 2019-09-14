@@ -65,9 +65,9 @@ function checkIfPid(searchInput) {
     } else if (input.length === 9 || input.length === 7) {
       return { type: "Section", value: input };
     }
-    return { type: "Error", value: "Please enter a valid input with an address and city (e.g. 300 6th Street South, Minneapolis)" };
+    return { type: "Error", value: "Please enter a valid address or PIN" };
   }
-  return { type: "Error", value: "Please enter a valid input with an address and city (e.g. 300 6th Street South, Minneapolis)" };
+  return { type: "Error", value: "Please enter a valid address or PIN" };
 }
 
 
@@ -76,7 +76,7 @@ export default function (searchInput) {
     const isClean = checkWhiteList(searchInput);
 
     if (!isClean) { // if is not clean
-      return { type: "Error", value: "Please enter a valid input with an address and city (e.g. 300 6th Street South, Minneapolis)" };
+      return { type: "Error", value: "Please enter a valid address or PIN" };
     } // is clean
     let pid = "";
 

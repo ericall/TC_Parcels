@@ -703,6 +703,7 @@ export default {
   display: block;
   z-index: 99;
   top: auto;
+  max-width: 400px!important;
 }
 
 .valid-tooltip {
