@@ -94,5 +94,41 @@ export default {
        // store.commit("showError", "There was an issue retrieving data.");
        // store.commit("hideLoader");
       });
-  }
+  },
+
+  /* query by pid
+    @param - pid : string | the pid to query
+    @param - multiInput : boolean | if multi input is on
+    @param - inputLen : number | the number of pids entered in input, if users do so
+    @return - none
+  */
+ queryByPid (pid, Query, QueryTask) {
+  console.log("store.queryByPid", pid);
+  // bad one - 2602924220351
+  const _this = this;
+
+  const qTask = new QueryTask({
+    url: config.ParcelsPoly
+  });
+
+
+  const params = new Query({
+    returnGeometry: true,
+    outFields: ["*"],
+    where: `PIN LIKE '%${pid}%'`
+  });
+
+  qTask.execute(params)
+    .then((results) => {
+      console.log("queryByPid results", results);
+      if (results.features.length > 0) {
+        store.commit("setNewResult", results.features);
+      }
+    })
+    .catch((err) => {
+      console.log("error querying for data", err);
+    //  store.commit("showError", "There was an issue retrieving data.");
+    //  store.commit("hideLoader");
+    });
+},
 };

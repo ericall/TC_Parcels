@@ -186,7 +186,8 @@ export default {
               this.sendToLocator(input.value);
             }
           } else if (input.type === "PID") {
-            query.queryByPid(input.value, this.multiInput);
+            query.queryByPid(input.value, this.esriModules.Query,
+                this.esriModules.QueryTask);
           }
         } else if (input.type === "Section") {
           // query for section

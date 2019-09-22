@@ -61,34 +61,47 @@ header {
   padding: 0;
 }
 
-.btn-primary {
+// .btn-primary {
+//   width: 45px;
+//   border-radius: 30px;
+//   margin: 0px 5px;
+//   background-color: #089fc1;
+
+//   max-height: 40px;
+// }
+
+// .btn-primary:hover {
+//   width: 135px;
+//   background-color: #089fc1;
+//   border-color: #089fc1;
+// }
+
+#info-btn {
   width: 45px;
+  max-height: 40px;
   border-radius: 30px;
   margin: 0px 5px;
   background-color: #089fc1;
-  transition: all 0.2s ease-in-out;
-  max-height: 40px;
-}
-
-.btn-primary:hover {
-  width: 135px;
-  background-color: #089fc1;
-  border-color: #089fc1;
-}
-
-#info-btn {
   position: absolute;
   top: 8px;
   right: 15px;
-  content: "";
   height: 40px;
+  transition: all 0.2s ease-in-out;
+  content: "";
+}
+
+#info-btn:hover {
+  width: 135px;
+  background-color: #089fc1;
+  border-color: #089fc1;
+  content: "";
 }
 
 #info-btn:hover::after {
   content: " Information";
-  float: right;
-  // position: absolute;
-  left: 7px;
+  position: absolute;
+  top: 6px;
+  left: 38px;
 }
 
 #info-img {
