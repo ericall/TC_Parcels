@@ -163,6 +163,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.adjustLeftPaneWidth);
+    this.adjustLeftPaneWidth("clear");
   },
   computed: {
     // result() {

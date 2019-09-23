@@ -2,7 +2,7 @@
   <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="z-index: 99;">
       <a class="navbar-brand" href="#">TC Parcel</a>
-      <button
+      <!-- <button
         class="navbar-toggler"
         type="button"
         data-toggle="collapse"
@@ -12,8 +12,8 @@
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      </button> -->
+      <div id="navbarNav">
         <div class="form-inline mx-auto">
           <!-- <input
             id="search-input"
@@ -24,13 +24,19 @@
           <Search></Search>
           <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
         </div>
-        <ul class="navbar-nav my-2 my-md-0">
+        <ul class="navbar-nav my-md-0">
           <!-- <li class="nav-item active">
       <button type="button" class="btn btn-primary esri-icon-basemap"></button>
       </li>
       <li class="nav-item">
         <button type="button" class="btn btn-primary esri-icon-layers"></button>
           </li>-->
+
+         <li v-if="windowWidth< 768" class="nav-item">
+            <button id="search-btn" type="button" class="btn btn-primary  esri-icon-search">
+            </button>
+          </li>
+
           <li class="nav-item">
             <button id="info-btn" type="button" class="btn btn-primary">
               <img id="info-img" src="../assets/info.png" />
@@ -49,6 +55,23 @@ export default {
   name: "Header",
   components: {
     Search
+  },
+
+  data() {
+    return {
+      windowWidth: null
+    }
+  },
+
+  mounted() {
+      window.addEventListener("resize", this.handleResize);
+      this.handleResize
+  },
+
+  methods: {
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    }
   }
 };
 </script>
@@ -119,9 +142,9 @@ header {
 }
 
 @media screen and (max-width: 767px) and (min-width: 574px) {
-  #info-btn {
-    top: 50px;
-  }
+  // #info-btn {
+  //   top: 50px;
+  // }
 }
 
 @media screen and (max-width: 573px) {

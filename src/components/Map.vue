@@ -22,7 +22,7 @@ import Queries from "../js/queries";
 //import { store } from "../store/store";
 
 const esriBasemapOptions = {
-  zoom: 10,
+  zoom: 9,
   center: [-93.5, 45]
 };
 
@@ -121,6 +121,8 @@ export default {
     this.handleResize();
     let _this = this;
 
+    this.adjustMapWidth("clear");
+
     console.log("map: mounted");
     loadModules(
       [
@@ -133,7 +135,10 @@ export default {
         "esri/tasks/IdentifyTask",
         "esri/tasks/support/IdentifyParameters",
         "esri/tasks/support/Query",
-        "esri/tasks/QueryTask"
+        "esri/tasks/QueryTask",
+        "esri/Basemap",
+        "esri/layers/TileLayer",
+        "esri/geometry/Extent"
       ],
       {
         // use a specific version instead of latest 4.x
@@ -150,7 +155,10 @@ export default {
         IdentifyTask,
         IdentifyParameters,
         Query,
-        QueryTask
+        QueryTask,
+        Basemap,
+        TileLayer,
+        Extent
       ]) => {
         this.esriMods = {
           Map,
@@ -162,7 +170,10 @@ export default {
           IdentifyTask,
           IdentifyParameters,
           Query,
-          QueryTask
+          QueryTask,
+          Basemap,
+          TileLayer,
+          Extent
         };
 
         Queries.getSchoolDistricts(Query, QueryTask);
@@ -189,8 +200,19 @@ export default {
           ]
         });
 
+        // var layer = new TileLayer({
+        //   url: config.MetroGIS_Basemap
+        // });
+
+        // var customBasemap = new Basemap({
+        //   baseLayers: [layer],
+        //   title: "Custom Basemap",
+        //   id: "myBasemap"
+        // });
+
         config.Map = new Map({
-          basemap: "streets",
+         // basemap: customBasemap,
+            basemap: "streets-navigation-vector",
           layers: [mapLayer]
         });
 
@@ -200,6 +222,15 @@ export default {
           zoom: esriBasemapOptions.zoom, // Sets zoom level based on level of detail (LOD)
           center: esriBasemapOptions.center // Sets center point of view using longitude,latitude
         });
+
+        // var ext = new Extent({
+        //   xmax: -10070320.457260672,
+        //   xmin: -10674478.728826676,
+        //   ymax: 5790205.5671818955,
+        //   ymin: 5444710.199332916,
+        //   spatialReference: new SpatialReference({ wkid: 3857 })
+        // });
+        // config.View.extent = ext;
 
         config.View.when(function() {
           // executeIdentifyTask() is called each time the view is clicked

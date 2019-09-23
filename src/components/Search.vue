@@ -1,22 +1,27 @@
 <template>
   <div style="width: 100%;">
-    <input
-      id="search-input-box"
-      class="form-control mr-sm-2 search-input"
-      v-model.trim="search"
-      v-bind:placeholder="configs.placeholder"
-      @input="autosuggest($event)"
-      @keyup.down="onArrowDown"
-      @keyup.up="onArrowUp"
-      @keyup.enter="onEnter"
-      :class="{ 'isInvalid': invalidInput }"
-      varia-label="Search"
-    />
-    <button
+    <div class="input-group">
+      <input
+        id="search-input-box"
+        class="form-control search-input"
+        v-model.trim="search"
+        v-bind:placeholder="configs.placeholder"
+        @input="autosuggest($event)"
+        @keyup.down="onArrowDown"
+        @keyup.up="onArrowUp"
+        @keyup.enter="onEnter"
+        :class="{ 'isInvalid': invalidInput }"
+        varia-label="Search"
+      />
+      <div class="input-group-append">
+        <span class="input-group-text esri-icon-search" id="basic-addon2" v-on:click="searchInput(null)"></span>
+      </div>
+    </div>
+    <!-- <button
       type="button"
       class="btn btn-outline-success my-2 my-sm-0"
       v-on:click="searchInput(null)"
-    >Search</button>
+    >Search</button>-->
     <div
       v-if="invalidInput || multipleAddressesFound"
       v-bind:class="{'invalid-tooltip': invalidInput, 'valid-tooltip': multipleAddressesFound}"
@@ -72,7 +77,6 @@
         :class="{ 'is-active': i === arrowCounter }"
       >{{ result }}</li>
     </ul>
-
   </div>
 </template>
 
@@ -186,8 +190,11 @@ export default {
               this.sendToLocator(input.value);
             }
           } else if (input.type === "PID") {
-            query.queryByPid(input.value, this.esriModules.Query,
-                this.esriModules.QueryTask);
+            query.queryByPid(
+              input.value,
+              this.esriModules.Query,
+              this.esriModules.QueryTask
+            );
           }
         } else if (input.type === "Section") {
           // query for section
@@ -640,9 +647,9 @@ export default {
     });
 
     /**** fixes IE issue with selecting multi input from caches status of switch button ******/
-   // let search = document.getElementsByClassName("search-input")[0];
+    // let search = document.getElementsByClassName("search-input")[0];
     //search.value = "";
-    
+
     // this.$store.commit("changeMultiInputState", false);
     // let multiCheckbox = document.getElementById("multi-input-checkbox");
     // multiCheckbox.checked = false;
@@ -704,7 +711,7 @@ export default {
   display: block;
   z-index: 99;
   top: auto;
-  max-width: 400px!important;
+  max-width: 400px !important;
 }
 
 .valid-tooltip {
