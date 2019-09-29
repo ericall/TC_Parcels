@@ -13,7 +13,7 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button> -->
-      <div id="navbarNav">
+      <div id="navbarNav" class="mx-auto">
         <div class="form-inline mx-auto">
           <!-- <input
             id="search-input"
@@ -32,7 +32,7 @@
         <button type="button" class="btn btn-primary esri-icon-layers"></button>
           </li>-->
 
-         <li v-if="windowWidth< 768" class="nav-item">
+         <li v-if="windowWidth < 768" class="nav-item">
             <button id="search-btn" type="button" class="btn btn-primary  esri-icon-search">
             </button>
           </li>
@@ -64,13 +64,16 @@ export default {
   },
 
   mounted() {
+    console.log("Header mounted");
+     this.handleResize();
       window.addEventListener("resize", this.handleResize);
-      this.handleResize
+     
   },
 
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth;
+      console.log("this.windowWidth", this.windowWidth);
     }
   }
 };
