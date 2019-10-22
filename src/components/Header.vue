@@ -2,40 +2,13 @@
   <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="z-index: 99;">
       <a class="navbar-brand" href="#">TC Parcel</a>
-      <!-- <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button> -->
       <div id="navbarNav" class="mx-auto">
-        <div class="form-inline mx-auto">
-          <!-- <input
-            id="search-input"
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search by address or PIN"
-          />-->
+        <div v-if="windowWidth >= 768" class="form-inline mx-auto">
           <Search></Search>
-          <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
         </div>
         <ul class="navbar-nav my-md-0">
-          <!-- <li class="nav-item active">
-      <button type="button" class="btn btn-primary esri-icon-basemap"></button>
-      </li>
-      <li class="nav-item">
-        <button type="button" class="btn btn-primary esri-icon-layers"></button>
-          </li>-->
 
-         <li v-if="windowWidth < 768" class="nav-item">
-            <button id="search-btn" type="button" class="btn btn-primary  esri-icon-search">
-            </button>
-          </li>
+       
 
           <li class="nav-item">
             <button id="info-btn" type="button" class="btn btn-primary">
@@ -43,6 +16,12 @@
             </button>
           </li>
         </ul>
+
+            <button v-if="windowWidth < 768" id="mobile-search-btn" type="button" class="btn btn-primary">
+            <span class="esri-icon-search"></span>
+            <span> Search</span>
+            </button>
+        
       </div>
     </nav>
   </header>
@@ -144,6 +123,14 @@ header {
   width: 300px !important;
 }
 
+#mobile-search-btn {
+  position: absolute;
+    left: 115px;
+    top: 12px;
+    color: white;
+    font-size: 20px;
+}
+
 @media screen and (max-width: 767px) and (min-width: 574px) {
   // #info-btn {
   //   top: 50px;
@@ -151,8 +138,8 @@ header {
 }
 
 @media screen and (max-width: 573px) {
-  #info-btn {
-    top: 93px;
-  }
+  // #info-btn {
+  //   top: 93px;
+  // }
 }
 </style>

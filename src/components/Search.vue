@@ -11,10 +11,10 @@
         @keyup.up="onArrowUp"
         @keyup.enter="onEnter"
         :class="{ 'isInvalid': invalidInput }"
-        varia-label="Search"
+        varia-label="Find an Address or PIN"
       />
       <div class="input-group-append">
-        <span class="input-group-text esri-icon-search" id="basic-addon2" v-on:click="searchInput(null)"></span>
+        <span class="input-group-text esri-icon-search" id="search-btn" v-on:click="searchInput(null)"></span>
       </div>
     </div>
     <!-- <button
@@ -106,7 +106,7 @@ export default {
       configs: {
         useAutoSuggest: true,
         helperText: "Find address or PID",
-        placeholder: "Search"
+        placeholder: "Find an Address or PIN"
       },
       autoHeight: 0,
       autoListItemHeight: 32,
@@ -666,8 +666,15 @@ export default {
   /* justify-content: left!important; */
 }
 
+#search-btn {
+  color: white;
+}
+
 .search-input {
   width: 400px !important;
+  border-bottom: 1px solid #9E9E9E;
+  font-size: 18px;
+    padding-bottom: 1px
 }
 
 .text-muted {
@@ -679,7 +686,7 @@ export default {
   margin: 0;
   height: 250px;
   overflow: auto;
-  width: 320px;
+  width: 400px;
   position: absolute;
   z-index: 99;
   background: white;
@@ -821,6 +828,15 @@ input:checked + .slider:before {
   color: black;
   font-size: 13px;
   top: 4px;
+}
+
+.input-group-append {
+      padding: 0 8px;
+}
+
+.input-group-append:hover {
+      background: #089fc1;
+      cursor: pointer;
 }
 
 @media screen and (max-width: 573px) {

@@ -295,6 +295,7 @@ header {
   width: 50px;
   transition: all 0.2s ease-in-out;
   max-height: 40px;
+  line-height: 25px;
 }
 
 .btn-primary:hover {
@@ -305,9 +306,19 @@ header {
 
 #basemap-btn:hover::after {
   content: " Basemaps";
+  color: white;
+}
+
+#mapLayers-btn:hover{
+  padding-left: 7px;
 }
 
 #mapLayers-btn:hover::after {
   content: " Maplayers";
+  color: white;
 }
+
+
+
+
 </style>
