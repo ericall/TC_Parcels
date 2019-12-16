@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;">
-    <div class="input-group">
+    <div v-if="windowWidth > 550" class="input-group">
       <input
         id="search-input-box"
         class="form-control search-input"
@@ -17,11 +17,7 @@
         <span class="input-group-text esri-icon-search" id="search-btn" v-on:click="searchInput(null)"></span>
       </div>
     </div>
-    <!-- <button
-      type="button"
-      class="btn btn-outline-success my-2 my-sm-0"
-      v-on:click="searchInput(null)"
-    >Search</button>-->
+
     <div
       v-if="invalidInput || multipleAddressesFound"
       v-bind:class="{'invalid-tooltip': invalidInput, 'valid-tooltip': multipleAddressesFound}"
@@ -127,7 +123,8 @@ export default {
       searchType: null,
       invalidPids: [],
       autoCompleteAddresses: [],
-      autoCompleteAddressesFull: []
+      autoCompleteAddressesFull: [],
+      windowWidth: null
     };
   },
 
@@ -141,6 +138,11 @@ export default {
     })
   },
   methods: {
+
+        handleResize() {
+      this.windowWidth = window.innerWidth;
+      console.log("this.windowWidth", this.windowWidth);
+    },
     /* start the process to search for an input - either address or pid
       @param - address : string | the input
       @return - none
@@ -654,6 +656,8 @@ export default {
     // let multiCheckbox = document.getElementById("multi-input-checkbox");
     // multiCheckbox.checked = false;
     // document.getElementById("multi-form").reset();
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize);
   }
 };
 </script>
@@ -839,9 +843,21 @@ input:checked + .slider:before {
       cursor: pointer;
 }
 
-@media screen and (max-width: 573px) {
+@media screen and (max-width: 700px) {
   .search-input {
-    width: 100% !important;
+    width: 380px !important;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .search-input {
+    width: 330px !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .search-input {
+    width: 280px !important;
   }
 }
 </style>
