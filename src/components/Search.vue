@@ -1,5 +1,6 @@
 <template>
   <div style="width: 100%;">
+    
     <div v-if="windowWidth > 550" class="input-group">
       <input
         id="search-input-box"
@@ -17,6 +18,27 @@
         <span class="input-group-text esri-icon-search" id="search-btn" v-on:click="searchInput(null)"></span>
       </div>
     </div>
+
+    <div v-if="openMobileSearch" class="input-group mobile-search">
+      <input
+        id="search-input-box"
+        class="form-control mobile-search-input"
+        v-model.trim="search"
+        v-bind:placeholder="configs.placeholder"
+        @input="autosuggest($event)"
+        @keyup.down="onArrowDown"
+        @keyup.up="onArrowUp"
+        @keyup.enter="onEnter"
+        :class="{ 'isInvalid': invalidInput }"
+        varia-label="Find an Address or PIN"
+      />
+      <div class="input-group-append">
+        <span class="input-group-text esri-icon-search" id="search-btn" v-on:click="searchInput(null)"></span>
+      </div>
+    
+  </div>
+
+
 
     <div
       v-if="invalidInput || multipleAddressesFound"
@@ -96,6 +118,7 @@ const searchOptions = {
 
 export default {
   name: "Search",
+  props: ['openMobile'],
 
   data() {
     return {
@@ -124,7 +147,8 @@ export default {
       invalidPids: [],
       autoCompleteAddresses: [],
       autoCompleteAddressesFull: [],
-      windowWidth: null
+      windowWidth: null,
+      openMobileSearch: false
     };
   },
 
@@ -621,6 +645,15 @@ export default {
       } else {
         this.multiInput = false;
       }
+    },
+
+    openMobile(open) {
+      if (open){
+        this.openMobileSearch = true;
+      } else {
+         this.openMobileSearch = false;
+      }
+      console.log("open mobile search", open);
     },
 
     /* watches for a change search type
