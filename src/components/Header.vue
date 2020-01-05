@@ -3,9 +3,9 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="z-index: 99;">
       <a class="navbar-brand" v-bind:class="{ navbarLeft: hide }" href="#">TC Parcel</a>
 
-      <div v-if="windowWidth >= 700" id="navbarNav" class="mx-auto">
+      <div v-if="windowWidth >= 550" id="navbarNav" class="mx-auto">
         <div class="form-inline mx-auto">
-          <Search></Search>
+          <Search v-bind:openMobile="openMobile"></Search>
         </div>
         <ul class="navbar-nav my-md-0">
           <li class="nav-item">
@@ -71,11 +71,13 @@ export default {
   methods: {
     handleResize() {
       this.windowWidth = window.innerWidth;
-      // if (this.windowWidth > 550){
-      //   this.hideMobileSearch();
-      // } else {
-      //   this.openMobileSearch();
-      // }
+      if (this.windowWidth > 550){
+        this.hideMobileSearch();
+        // this.openMobile = true;
+          this.openMobile = false;
+      } else {
+      //  this.openMobileSearch();
+      }
       console.log("this.windowWidth", this.windowWidth);
     },
 
@@ -175,16 +177,17 @@ header {
 }
 
 #info-btn:hover {
-  width: 135px;
+  width: 145px;
   background-color: #089fc1;
   border-color: #089fc1;
   content: "";
+  color: white;
 }
 
 #info-btn:hover::after {
   content: " Information";
   position: absolute;
-  top: 6px;
+  top: 10px;
   left: 38px;
 }
 

@@ -35,7 +35,8 @@ export default {
       mapLeftMargin: 0,
       esriMods: {},
       identifyResults: [],
-      minimizeMap: false
+      minimizeMap: false,
+      results: null
     };
   },
   computed: {
@@ -46,7 +47,7 @@ export default {
   watch: {
     result(res) {
       console.log("watch result", res);
-
+      this.results = res;
       this.processResults(res);
     }
   },
@@ -58,7 +59,12 @@ export default {
       var headerHeight = document.getElementsByTagName("header")[0]
         .clientHeight;
       this.mapHeight = window.innerHeight - headerHeight;
-      this.adjustMapWidth();
+
+      if (this.results) {
+        this.adjustMapWidth("results");
+      } else {
+        this.adjustMapWidth("clear");
+      }
     },
 
     executeIdentifyTask(event) {
@@ -211,8 +217,8 @@ export default {
         // });
 
         config.Map = new Map({
-         // basemap: customBasemap,
-            basemap: "streets-navigation-vector",
+          // basemap: customBasemap,
+          basemap: "streets-navigation-vector",
           layers: [mapLayer]
         });
 
@@ -309,7 +315,7 @@ header {
   color: white;
 }
 
-#mapLayers-btn:hover{
+#mapLayers-btn:hover {
   padding-left: 7px;
 }
 
@@ -317,8 +323,4 @@ header {
   content: " Maplayers";
   color: white;
 }
-
-
-
-
 </style>

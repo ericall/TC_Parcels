@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;">
     
-    <div v-if="windowWidth > 550" class="input-group">
+    <div v-if="windowWidth > 550 && !openMobileSearch" class="input-group">
       <input
         id="search-input-box"
         class="form-control search-input"
@@ -709,9 +709,13 @@ export default {
 
 .search-input {
   width: 400px !important;
-  border-bottom: 1px solid #9E9E9E;
+  border-bottom: 2px solid #089fc1;
   font-size: 18px;
     padding-bottom: 1px
+}
+
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg,#089fc1 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 2px,transparent 0);
 }
 
 .text-muted {
@@ -872,7 +876,7 @@ input:checked + .slider:before {
 }
 
 .input-group-append:hover {
-      background: #089fc1;
+      /* background: #089fc1; */
       cursor: pointer;
 }
 

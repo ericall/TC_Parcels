@@ -121,6 +121,8 @@
 <script>
 //import { store } from "../store/store";
 //import { mapState } from "vuex";
+import { loadModules } from "esri-loader";
+import map from "../js/map";
 import { mapGetters } from "vuex";
 import config from "../store/config.json";
 
@@ -128,6 +130,7 @@ export default {
   name: "Results",
   data() {
     return {
+      esriModules: null,
       resultsWidth: 0,
       resultsHeight: 0,
       nresult: null,
@@ -156,12 +159,24 @@ export default {
         numOfUnits: null, //NUM_UNITS,
         homeStyle: null, //HOME_STYLE,
         totalTax: null, //TOTAL_TAX
-        dwellingType: null, //DWELL_TYPE,
-        
+        dwellingType: null //DWELL_TYPE,
       }
     };
   },
   mounted() {
+    let _this = this;
+    loadModules([
+      "esri/layers/GraphicsLayer", 
+      "esri/Graphic",
+      "esri/symbols/SimpleFillSymbol"
+    ]).then(([GraphicsLayer, Graphic, SimpleFillSymbol]) => {
+      _this.esriModules = {
+        GraphicsLayer, 
+        Graphic,
+        SimpleFillSymbol
+      };
+    });
+
     window.addEventListener("resize", this.adjustLeftPaneWidth);
     this.adjustLeftPaneWidth("clear");
   },
@@ -192,6 +207,8 @@ export default {
         let attr = res[0].attributes || res[0].feature.attributes;
         this.processAttributes(attr);
         this.adjustLeftPaneWidth("results");
+        map.showParcelSelection(res[0].geometry, this.esriModules.GraphicsLayer, this.esriModules.Graphic, this.esriModules.SimpleFillSymbol);
+        map.zoomToFeature(res[0].geometry);
       }
     },
 
@@ -256,7 +273,14 @@ export default {
       this.addressResult.garage = this.getCleanValue(attr.GARAGE);
       this.addressResult.garageSqFt = this.getCleanValue(attr.GARAGESQFT);
 
-      if (this.addressResult.homeStyle || this.addressResult.dwellingType || this.addressResult.basement || this.addressResult.heating || this.addressResult.numOfUnits || this.addressResult.garage){
+      if (
+        this.addressResult.homeStyle ||
+        this.addressResult.dwellingType ||
+        this.addressResult.basement ||
+        this.addressResult.heating ||
+        this.addressResult.numOfUnits ||
+        this.addressResult.garage
+      ) {
         this.showBuildingInfo = true;
       } else {
         this.showBuildingInfo = false;
