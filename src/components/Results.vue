@@ -168,12 +168,18 @@ export default {
     loadModules([
       "esri/layers/GraphicsLayer", 
       "esri/Graphic",
-      "esri/symbols/SimpleFillSymbol"
-    ]).then(([GraphicsLayer, Graphic, SimpleFillSymbol]) => {
+      "esri/symbols/SimpleFillSymbol",
+      "esri/tasks/GeometryService",
+      "esri/tasks/support/ProjectParameters",
+        "esri/geometry/SpatialReference"
+    ]).then(([GraphicsLayer, Graphic, SimpleFillSymbol,GeometryService,ProjectParameters,SpatialReference]) => {
       _this.esriModules = {
         GraphicsLayer, 
         Graphic,
-        SimpleFillSymbol
+        SimpleFillSymbol,
+        GeometryService,
+        ProjectParameters,
+        SpatialReference
       };
     });
 
@@ -208,7 +214,7 @@ export default {
         this.processAttributes(attr);
         this.adjustLeftPaneWidth("results");
         map.showParcelSelection(res[0].geometry, this.esriModules.GraphicsLayer, this.esriModules.Graphic, this.esriModules.SimpleFillSymbol);
-        map.zoomToFeature(res[0].geometry);
+       map.zoomToFeature(res[0].geometry, this.esriModules.GeometryService, this.esriModules.ProjectParameters, this.esriModules.SpatialReference);
       }
     },
 
@@ -240,7 +246,8 @@ export default {
       this.addressResult.owner = this.getCleanValue(attr.OWNER_NAME);
       this.addressResult.taxpayer = this.getCleanValue(attr.TAX_NAME);
       this.addressResult.pin = this.getCleanValue(attr.COUNTY_PIN);
-      this.addressResult.school = this.getDistrict(attr.SCHOOL_DST);
+      //this.addressResult.school = this.getDistrict(attr.SCHOOL_DST);
+      this.addressResult.school = "TODO";
       this.addressResult.fullAddress = this.constructStreetAddress(attr);
       this.addressResult.county = this.getCleanValue(attr.CO_NAME);
       this.addressResult.acres = this.getCleanValue(attr.ACRES_POLY);

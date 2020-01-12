@@ -182,7 +182,7 @@ export default {
           Extent
         };
 
-        Queries.getSchoolDistricts(Query, QueryTask);
+       // Queries.getSchoolDistricts(Query, QueryTask);
         // create map with the given options at a DOM node w/ id 'mapNode'
         var mapLayer = new MapImageLayer({
           url: config.MetroGISUrl,

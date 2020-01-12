@@ -7,5 +7,6 @@
     "LocatorUrl": "https://gis.hennepin.us/arcgis/rest/services/Locators/HC_COMPOSITE/GeocodeServer",
     "AutoCompleteUrl": "https://gis2.metc.state.mn.us/arcgis/rest/services/plan_regional_parcels/MapServer/1",
     "ParcelsPoly": "https://gis2.metc.state.mn.us/arcgis/rest/services/plan_regional_parcels/MapServer/1",
-    "MetroGIS_Basemap": "https://gis2.metc.state.mn.us/arcgis/rest/services/BaseLayer/BasemapWM/MapServer"
+    "MetroGIS_Basemap": "https://gis2.metc.state.mn.us/arcgis/rest/services/BaseLayer/BasemapWM/MapServer",
+    "GeometryServiceUrl": "http://gis.hennepin.us/arcgis/rest/services/Utilities/Geometry/GeometryServer"
 }
