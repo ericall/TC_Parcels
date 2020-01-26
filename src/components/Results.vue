@@ -166,22 +166,31 @@ export default {
   mounted() {
     let _this = this;
     loadModules([
-      "esri/layers/GraphicsLayer", 
+      "esri/layers/GraphicsLayer",
       "esri/Graphic",
       "esri/symbols/SimpleFillSymbol",
       "esri/tasks/GeometryService",
       "esri/tasks/support/ProjectParameters",
-        "esri/geometry/SpatialReference"
-    ]).then(([GraphicsLayer, Graphic, SimpleFillSymbol,GeometryService,ProjectParameters,SpatialReference]) => {
-      _this.esriModules = {
-        GraphicsLayer, 
+      "esri/geometry/SpatialReference"
+    ]).then(
+      ([
+        GraphicsLayer,
         Graphic,
         SimpleFillSymbol,
         GeometryService,
         ProjectParameters,
         SpatialReference
-      };
-    });
+      ]) => {
+        _this.esriModules = {
+          GraphicsLayer,
+          Graphic,
+          SimpleFillSymbol,
+          GeometryService,
+          ProjectParameters,
+          SpatialReference
+        };
+      }
+    );
 
     window.addEventListener("resize", this.adjustLeftPaneWidth);
     this.adjustLeftPaneWidth("clear");
@@ -207,14 +216,32 @@ export default {
   },
   methods: {
     processResults(res) {
+      console.log("Results.processResults");
       this.showLeftPane = true;
       this.nresult = res;
       if (res.length === 1) {
         let attr = res[0].attributes || res[0].feature.attributes;
         this.processAttributes(attr);
         this.adjustLeftPaneWidth("results");
-        map.showParcelSelection(res[0].geometry, this.esriModules.GraphicsLayer, this.esriModules.Graphic, this.esriModules.SimpleFillSymbol);
-       map.zoomToFeature(res[0].geometry, this.esriModules.GeometryService, this.esriModules.ProjectParameters, this.esriModules.SpatialReference);
+        let geom;
+
+        if (res[0].feature) {
+          geom = res[0].feature.geometry;
+        } else {
+          geom = res[0].geometry;
+        }
+        map.showParcelSelection(
+          geom,
+          this.esriModules.GraphicsLayer,
+          this.esriModules.Graphic,
+          this.esriModules.SimpleFillSymbol
+        );
+        map.zoomToFeature(
+          geom,
+          this.esriModules.GeometryService,
+          this.esriModules.ProjectParameters,
+          this.esriModules.SpatialReference
+        );
       }
     },
 

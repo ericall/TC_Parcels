@@ -49,6 +49,9 @@ export default {
       console.log("watch result", res);
       this.results = res;
       this.processResults(res);
+      if (res.length > 0){
+        this.adjustMapWidth("results");
+      }
     }
   },
   methods: {
@@ -81,6 +84,7 @@ export default {
       params.height = config.View.height;
       params.geometry = event.mapPoint;
       params.mapExtent = config.View.extent;
+      params.returnGeometry = true;
 
       identifyTask.execute(params).then(function(response) {
         var results = response.results;
@@ -182,7 +186,7 @@ export default {
           Extent
         };
 
-       // Queries.getSchoolDistricts(Query, QueryTask);
+        // Queries.getSchoolDistricts(Query, QueryTask);
         // create map with the given options at a DOM node w/ id 'mapNode'
         var mapLayer = new MapImageLayer({
           url: config.MetroGISUrl,
